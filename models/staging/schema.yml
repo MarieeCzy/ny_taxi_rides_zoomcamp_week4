@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: staging
+    database: focus-poet-376519 
+    schema: dezoomcamp2
+
+    tables:
+      - name: rides
