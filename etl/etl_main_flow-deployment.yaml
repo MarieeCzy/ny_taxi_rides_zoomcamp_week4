@@ -1,0 +1,66 @@
+###
+### A complete description of a Prefect Deployment for flow 'etl-main-flow'
+###
+name: Dbt flow
+description: "The main flow function accepting arguments describing datasets and \n\
+  calling the subflow function etl_web_to_gcs.\n\nArgs:\n    months (list): The months\
+  \ the data comes from\n    year (int): The year the data comes from\n    color (list):\
+  \ The collection from which the data comes\n\nNotes:\n    See: https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page\
+  \ for more info."
+version: c51f8034f1f6693d362ad5d3cd0a3b8d
+# The work queue that will handle this deployment's runs
+work_queue_name: default
+tags: []
+parameters: {}
+schedule: null
+infra_overrides: {}
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  working_dir: null
+  block_type_slug: process
+  _block_type_slug: process
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: etl-main-flow
+manifest_path: null
+storage: null
+path: /Users/mariaczapczyk/Documents/GitHub/ny_taxi_rides_zoomcamp_week4/etl
+entrypoint: main_etl_script.py:etl_main_flow
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties:
+    months:
+      title: months
+      description: The months the data comes from
+      default:
+      - 1
+      - 2
+      - 3
+      - 4
+      position: 0
+      type: array
+      items: {}
+    year:
+      title: year
+      description: The year the data comes from
+      default: 2021
+      position: 1
+      type: integer
+    colors:
+      title: colors
+      default:
+      - yellow
+      - green
+      position: 2
+      type: array
+      items: {}
+  required: null
+  definitions: null
