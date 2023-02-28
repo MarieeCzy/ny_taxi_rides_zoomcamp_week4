@@ -4,7 +4,7 @@ from prefect.deployments import Deployment
 main_deployment = Deployment.build_from_flow(
     flow=etl_main_flow,
     name="Dbt main flow",
-    parameters= {"months": [1,2], "year": 2021, "colors": ["yellow"]},
+    parameters= {"months": [1,2,3,4], "year": 2021, "colors": ["yellow","green"]},
     work_queue_name="default"
 )
 
