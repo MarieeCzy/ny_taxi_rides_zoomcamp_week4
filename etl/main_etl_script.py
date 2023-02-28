@@ -2,9 +2,11 @@ from pathlib import Path
 import pandas as pd
 from prefect import flow, task
 from prefect_gcp.cloud_storage import GcsBucket
+from prefect.tasks import task_input_hash
 import os
+from datetime import timedelta
 
-@task
+@task(cache_key_fn=task_input_hash, cache_expiration=timedelta(days=1))
 def fetch_data(dataset_url: str) -> pd.DataFrame:
     '''
     Read taxi data from web into pandas DataFrame.
@@ -27,8 +29,18 @@ def pre_clean_df(df: pd.DataFrame) -> pd.DataFrame:
     Args: 
         df (pd.Dataframe): Raw taxi dataframe downloaded from web.
     '''
-    df['tpep_pickup_datetime'] = pd.to_datetime(df['tpep_pickup_datetime'])
-    df['tpep_dropoff_datetime'] = pd.to_datetime(df['tpep_dropoff_datetime'])
+    try:
+        df['tpep_pickup_datetime'] = pd.to_datetime(df['tpep_pickup_datetime'])
+        df['tpep_dropoff_datetime'] = pd.to_datetime(df['tpep_dropoff_datetime'])
+        try:
+            df['lpep_pickup_datetime'] = pd.to_datetime(df['lpep_pickup_datetime'])
+            df['lpep_dropoff_datetime'] = pd.to_datetime(df['lpep_dropoff_datetime'])
+        
+        except KeyError:
+            pass
+    except KeyError:
+        pass
+    
     return df
 
 
@@ -43,9 +55,10 @@ def write_local(df: pd.DataFrame, color: str, dataset_file: str) -> Path:
         dataset_file (str): Name of .parquet file
     '''
     
-    path = Path(f'data/{dataset_file}.paquet')
+    path = Path(f'data/{dataset_file}.parquet')
     df.to_parquet(path, compression='gzip')
     return path
+
 
 @task
 def write_to_gcs(path: Path) -> None:
@@ -53,7 +66,7 @@ def write_to_gcs(path: Path) -> None:
     Uploading local parquet file to Google Cloud Storage bucket.
     
     Args:
-        path (Path): URL path to .parquet taci dataset daved locally in /data directory.
+        path (Path): URL path to .parquet taxi dataset saved locally in /data directory.
     '''
     gcp_cloud_storage_bucket_block = GcsBucket.load("dbt-gcs-bucket")
     gcp_cloud_storage_bucket_block.upload_from_path(from_path=path, to_path=path)
