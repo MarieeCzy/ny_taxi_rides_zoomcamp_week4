@@ -15,8 +15,10 @@ variable "bucket_name" {
 }
 
 variable "big-query-tables" {
-  type    = list(any)
-  default = ["green_trip_data_2021_01", "yellow_trip_data_2021_01"]
+  type = list(any)
+  default = ["green_trip_data_2021_01", "green_trip_data_2021_02",
+    "green_trip_data_2021_03", "green_trip_data_2021_04", "yellow_trip_data_2021_01",
+  "yellow_trip_data_2021_02", "yellow_trip_data_2021_03", "yellow_trip_data_2021_04"]
 }
 
 variable "location" {
