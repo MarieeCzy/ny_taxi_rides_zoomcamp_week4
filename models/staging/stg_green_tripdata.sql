@@ -8,8 +8,8 @@ select
     cast(dolocationid as integer) as dropoff_locationid,
     
     -- timestamps
-    cast(tpep_pickup_datetime as timestamp) as pickup_datetime,
-    cast(tpep_dropoff_datetime as timestamp) as dropoff_datetime,
+    cast(lpep_pickup_datetime as timestamp) as pickup_datetime,
+    cast(lpep_dropoff_datetime as timestamp) as dropoff_datetime,
     
     -- trip info
     store_and_fwd_flag,
@@ -29,6 +29,6 @@ select
     cast(payment_type as integer) as payment_type,
     cast(congestion_surcharge as numeric) as congestion_surcharge
 
-from {{source('staging','rides')}}
+from {{source('staging','green_trip_data_2021_01')}}
 limit 100
 
