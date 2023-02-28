@@ -14,6 +14,12 @@ tags: []
 parameters: {}
 schedule: null
 infra_overrides: {}
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: etl-main-flow
+manifest_path: null
 infrastructure:
   type: process
   env: {}
@@ -22,14 +28,11 @@ infrastructure:
   command: null
   stream_output: true
   working_dir: null
+  _block_document_id: ae3577b7-6dc2-47ba-a815-7b4ac38df1c7
+  _block_document_name: anonymous-95183c8d-0d94-42a8-b386-8665ca073346
+  _is_anonymous: true
   block_type_slug: process
   _block_type_slug: process
-
-###
-### DO NOT EDIT BELOW THIS LINE
-###
-flow_name: etl-main-flow
-manifest_path: null
 storage: null
 path: /Users/mariaczapczyk/Documents/GitHub/ny_taxi_rides_zoomcamp_week4/etl
 entrypoint: main_etl_script.py:etl_main_flow

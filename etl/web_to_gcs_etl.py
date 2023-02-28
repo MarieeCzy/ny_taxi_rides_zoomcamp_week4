@@ -34,14 +34,16 @@ def pre_clean_df(df: pd.DataFrame) -> pd.DataFrame:
     try:
         df['tpep_pickup_datetime'] = pd.to_datetime(df['tpep_pickup_datetime'])
         df['tpep_dropoff_datetime'] = pd.to_datetime(df['tpep_dropoff_datetime'])
-        try:
-            df['lpep_pickup_datetime'] = pd.to_datetime(df['lpep_pickup_datetime'])
-            df['lpep_dropoff_datetime'] = pd.to_datetime(df['lpep_dropoff_datetime'])
-        
-        except KeyError:
-            pass
     except KeyError:
         pass
+    
+    try:
+        df['lpep_pickup_datetime'] = pd.to_datetime(df['lpep_pickup_datetime'])
+        df['lpep_dropoff_datetime'] = pd.to_datetime(df['lpep_dropoff_datetime'])
+        
+    except KeyError:
+            pass
+    
     return df
 
 
