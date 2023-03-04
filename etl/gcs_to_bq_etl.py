@@ -4,7 +4,7 @@ from prefect import flow,task
 from prefect_gcp.cloud_storage import GcsBucket
 from prefect_gcp import GcpCredentials
 
-
+gcp_credentials_block = GcpCredentials.load("zoom-gcp-creds")
 
 @task
 def extract_from_gcs(year: int, month: int, color: str) -> Path:
@@ -29,10 +29,23 @@ def write_to_bq(df: pd.DataFrame, year: int, month: int, color: str) -> None:
     '''
     Write DataFrame into BigQuery
     '''
-    gcp_credentials_block = GcpCredentials.load("zoom-gcp-creds")
     destination_table = f'trips_data_all.{color}_trip_data_{year}_{month:02}'
     df.to_gbq(
         destination_table= destination_table,
+        project_id= 'focus-poet-376519',
+        credentials= gcp_credentials_block.get_credentials_from_service_account(),
+        chunksize=500_000,
+        if_exists= 'append'
+    )
+
+@task 
+def group_tripdata_to_bq(df: pd.DataFrame, color: str) -> None:
+    '''
+    For the purpose of creating a summary report, create a summary table for 
+    green tripdata and yellow tripdata containing all months.
+    '''
+    df.to_gbq(
+        destination_table= f'trips_data_all.{color}_tripdata',
         project_id= 'focus-poet-376519',
         credentials= gcp_credentials_block.get_credentials_from_service_account(),
         chunksize=500_000,
@@ -53,6 +66,7 @@ def etl_gcs_to_bq(year: int, month: int, color: str):
     path = extract_from_gcs(year, month, color)
     df = transform(path)
     write_to_bq(df, year, month, color)
+    group_tripdata_to_bq(df, color)
     
     
     
